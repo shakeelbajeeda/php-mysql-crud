@@ -13,7 +13,7 @@
 <body>
 
     <div class="container mt-3">
-        <h2 class="text-center">Student form</h2>
+        <h2 class="text-center">Add Student</h2>
         <form method="POST" action="students.php">
             <div class="row">
                 <div class="col-md-3 mb-3">

@@ -1,21 +1,36 @@
 <?php
 require_once 'database.php';
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $record = "SELECT name, fname, program, university FROM students WHERE id='$id'";
-    $n = $db->query($record)->fetchAll();
-    if (count($n) > 0) {
-        $name = $n[0]['name'];
-        $fname = $n[0]['fname'];
-        $program = $n[0]['program'];
-        $university = $n[0]['university'];
-        // die($university);
-    } else {
-        die("record not found");
+class edit_student extends database
+{
+    public function edit_student()
+    {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $record = "SELECT * FROM students WHERE id='$id'";
+            $n = $this->db->query($record)->fetchAll();
+            if (count($n) > 0) {
+                $data['name'] = $n[0]['name'];
+                $data['fname'] = $n[0]['fname'];
+                $data['program'] = $n[0]['program'];
+                $data['university'] = $n[0]['university'];
+                return $data;
+            } else {
+                die("record not found");
+            }
+        } else {
+            die('invalid id');
+        }
     }
-} else {
-    die('invalid id');
+    private $db;
+    public function __construct()
+    {
+        $this->db = $this->init_db();
+    }
 }
+
+$edit_student = new edit_student();
+$data = $edit_student->edit_student();
+
 ?>
 <!DOCTYPE html>
 
@@ -37,17 +52,17 @@ if (isset($_GET['id'])) {
         <form method="POST" action="update_student.php">
             <div class="row">
                 <div class="col-md-3 mb-3">
-                <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="id" value="<?= $_GET['id'] ?>">
                     <label for="name">Name:</label>
-                    <input type="name" class="form-control" id="name" value="<?= $name ?>" placeholder="Enter Name" name="name" required>
+                    <input type="name" class="form-control" id="name" value="<?= $data['name'] ?>" placeholder="Enter Name" name="name" required>
                 </div>
                 <div class="mb-3 col-md-3">
                     <label for="fname">Father Name:</label>
-                    <input type="text" class="form-control" id="fname" value="<?= $fname ?>" placeholder="Enter Father Name" name="fname" required>
+                    <input type="text" class="form-control" id="fname" value="<?= $data['fname'] ?>" placeholder="Enter Father Name" name="fname" required>
                 </div>
                 <div class="col-md-3 mt-4">
                     <select name="program" class="form-select" required>
-                        <option><?= $program ?></option>
+                        <option><?= $data['program'] ?></option>
                         <option>BS(CS)</option>
                         <option>BS(IT)</option>
                         <option>BS(SE)</option>
@@ -57,7 +72,7 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="col-md-3 mt-4">
                     <select name="university" class="form-select" required>
-                        <option><?= $university ?></option>
+                        <option><?= $data['university'] ?></option>
                         <option>UCP</option>
                         <option>UMT</option>
                         <option>UoL</option>
@@ -65,7 +80,7 @@ if (isset($_GET['id'])) {
                         <option>NUML</option>
                     </select>
                 </div>
-                <div class="col-12"> 
+                <div class="col-12">
                     <button type="submit" name="update" class="btn btn-info float-end px-4"><i class="fa fa-clock-o me-2"></i> Update</button>
                 </div>
             </div>

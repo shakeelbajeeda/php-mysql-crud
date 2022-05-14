@@ -1,14 +1,29 @@
 <?php
 session_start();
 require_once 'database.php';
-$sql = "select * from students";
-$data = $result = $db->query($sql)->fetchAll();
+class view_all extends database
+{
+    public function view_all_students()
+    {
+        $sql = "select * from students";
+        $data = $this->db->query($sql)->fetchAll();
+        return $data;
+    }
+    private $db;
+    public function __construct()
+    {
+        $this->db = $this->init_db();
+    }
+}
+$view_all_students = new view_all();
+$data = $view_all_students->view_all_students();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Bootstrap Example</title>
+    <title>View All Students</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -68,7 +83,9 @@ $data = $result = $db->query($sql)->fetchAll();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($data as $student) { ?>
+                <?php
+
+                foreach ($data as $student) { ?>
                     <tr>
                         <th scope="row"><?= $student['id'] ?></th>
                         <td><?= $student['name'] ?></td>
